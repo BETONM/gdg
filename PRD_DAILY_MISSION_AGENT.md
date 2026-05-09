@@ -35,7 +35,7 @@ Daily Check-in
 
 ### Screen 1. Daily Check-in
 
-사용자가 하루에 한 번 현재 상태를 입력한다.
+사용자가 하루에 한 번 현재 상태를 Gemini의 음성 대화를 통해 입력한다.
 
 Required inputs:
 

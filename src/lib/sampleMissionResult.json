@@ -1,0 +1,65 @@
+{
+  "stateSummary": {
+    "timeOfDay": "evening",
+    "primaryNeed": "meal",
+    "energyLevel": "low",
+    "urgency": "high",
+    "summary": "저녁 시간대에 식사를 못 한 상태입니다. 에너지가 낮고 외출을 하지 않아 기본적인 식사와 간단한 외출이 우선입니다."
+  },
+  "agentPlan": [
+    "사용자의 시간대(저녁)와 식사 여부(미식사)를 확인했습니다.",
+    "예산(8,000원)과 에너지 수준(낮음)으로 가능한 행동을 좁혔습니다.",
+    "주변 장소와 연결 가능한 미션 3개를 생성했습니다."
+  ],
+  "missions": [
+    {
+      "title": "편의점에서 간단한 저녁 해결하기",
+      "description": "오늘 아직 저녁을 못 드셨군요. 가까운 편의점에서 간편식으로 끼니를 챙겨보세요.",
+      "lifeArea": "meal",
+      "difficulty": "easy",
+      "estimatedMinutes": 15,
+      "estimatedCostKRW": 5000,
+      "points": 30,
+      "proofType": "receipt",
+      "proofCriteria": ["편의점 영수증 사진 첨부"],
+      "steps": ["가까운 편의점 검색", "간편식 또는 도시락 선택", "계산 후 집에서 먹기"],
+      "placeSearchQuery": "convenience store",
+      "needsMapSpot": true,
+      "soloFriendly": true,
+      "whyThisMission": "저녁을 못 드신 상태라 빠르게 해결할 수 있는 가장 현실적인 선택입니다."
+    },
+    {
+      "title": "5분 야외 산책하기",
+      "description": "오늘 외출을 안 하셨네요. 짧은 산책으로 기분 전환을 해보세요.",
+      "lifeArea": "outdoor",
+      "difficulty": "easy",
+      "estimatedMinutes": 10,
+      "estimatedCostKRW": 0,
+      "points": 20,
+      "proofType": "self_check",
+      "proofCriteria": ["산책 완료 자가 체크"],
+      "steps": ["편한 신발 신기", "집 근처 블록 한 바퀴 걷기", "돌아와서 물 한 잔 마시기"],
+      "placeSearchQuery": "park",
+      "needsMapSpot": true,
+      "soloFriendly": true,
+      "whyThisMission": "짧은 외출이 에너지를 회복시키고 고독감을 줄여줍니다."
+    },
+    {
+      "title": "오늘 하루 일기 3줄 쓰기",
+      "description": "오늘 하루를 3줄로 기록해보세요. 작은 글쓰기가 감정 정리에 도움이 됩니다.",
+      "lifeArea": "rest",
+      "difficulty": "easy",
+      "estimatedMinutes": 5,
+      "estimatedCostKRW": 0,
+      "points": 15,
+      "proofType": "text",
+      "proofCriteria": ["일기 내용 3줄 이상 작성"],
+      "steps": ["메모장이나 노트 열기", "오늘 있었던 일 3가지 적기", "내일 기대하는 것 1가지 추가하기"],
+      "placeSearchQuery": "cafe",
+      "needsMapSpot": false,
+      "soloFriendly": true,
+      "whyThisMission": "집 안에서도 할 수 있고 에너지가 낮아도 충분히 완료할 수 있습니다."
+    }
+  ],
+  "safetyNote": "에너지가 낮은 상태입니다. 무리하지 마시고 오늘은 식사와 간단한 휴식을 우선으로 하세요."
+}
