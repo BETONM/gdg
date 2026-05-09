@@ -98,4 +98,7 @@ export interface Activity {
   lat: number;
   lng: number;
   createdAt: Date;
+  // 함께하기 참여자 수 추적
+  participantCount: number;
+  maxParticipants: number;
 }

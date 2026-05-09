@@ -5,6 +5,9 @@ import {
   query,
   where,
   getDocs,
+  doc,
+  updateDoc,
+  increment,
   serverTimestamp,
   Timestamp,
   orderBy,
@@ -75,6 +78,8 @@ export async function saveActivity(
       lifeArea: mission.lifeArea,
       lat: snapToGrid(location.lat),
       lng: snapToGrid(location.lng),
+      participantCount: 1,
+      maxParticipants: 5,
       createdAt: serverTimestamp(),
     });
   } catch (err) {
@@ -110,6 +115,8 @@ export async function fetchNearbyActivities(
           lifeArea: data.lifeArea,
           lat: data.lat,
           lng: data.lng,
+          participantCount: data.participantCount ?? 1,
+          maxParticipants: data.maxParticipants ?? 5,
           createdAt: (data.createdAt as Timestamp).toDate(),
         } as Activity;
       })
@@ -137,6 +144,12 @@ export async function sendCollaborationRequest(
       activityId,
       status: 'pending',
       createdAt: serverTimestamp(),
+    });
+
+    // 해당 activity의 참여자 수 +1 증가
+    const activityRef = doc(db, 'activities', activityId);
+    await updateDoc(activityRef, {
+      participantCount: increment(1),
     });
   } catch (err) {
     console.warn('Collaboration request skipped:', err);

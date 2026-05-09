@@ -169,7 +169,7 @@ export function MapSpot({ mission, onComplete }: MapSpotProps) {
       dot.style.color = 'white';
       dot.style.fontSize = isSelected ? '12px' : '10px';
       dot.style.fontWeight = 'bold';
-      dot.innerText = '1/5';
+      dot.innerText = `${activity.participantCount}/${activity.maxParticipants}`;
 
       const marker = new window.google.maps.marker.AdvancedMarkerElement({
         position: { lat: activity.lat, lng: activity.lng },
@@ -189,6 +189,7 @@ export function MapSpot({ mission, onComplete }: MapSpotProps) {
               ${activity.userId === user?.uid ? '나의 발자국 👣' : '누군가의 발자국 👣'}
             </p>
             <p style="font-size: 12px; margin: 0; font-weight: 600;">${activity.missionTitle}</p>
+            <p style="font-size: 10px; margin-top: 4px; color: #666;">👥 참여 ${activity.participantCount}/${activity.maxParticipants}명</p>
           </div>
         `);
         infoWindow.open(mapInstance.current, marker);
@@ -228,6 +229,8 @@ export function MapSpot({ mission, onComplete }: MapSpotProps) {
       lifeArea: mission.lifeArea,
       lat: userLocation.lat,
       lng: userLocation.lng,
+      participantCount: 1,
+      maxParticipants: 5,
       createdAt: new Date(),
     }, ...prev]);
     
@@ -245,6 +248,14 @@ export function MapSpot({ mission, onComplete }: MapSpotProps) {
 
     setRequestingIds(prev => new Set(prev).add(activity.id!));
     await sendCollaborationRequest(user.uid, activity.userId, activity.id);
+
+    // 로컬 state에서 해당 activity의 participantCount를 즉시 +1 반영
+    setActivities(prev => prev.map(a =>
+      a.id === activity.id
+        ? { ...a, participantCount: Math.min(a.participantCount + 1, a.maxParticipants) }
+        : a
+    ));
+
     alert('같이 미션하자는 요청을 보냈습니다! 🤝');
   };
 
@@ -347,6 +358,22 @@ export function MapSpot({ mission, onComplete }: MapSpotProps) {
                     <p className="text-xs text-[var(--spot-gray-600)] truncate">
                       {isMine ? '내가 등록한 미션이에요' : '누군가 이 미션을 하고 있어요!'}
                     </p>
+                    <div className="flex items-center gap-1.5 mt-1.5">
+                      <div className="flex -space-x-1">
+                        {Array.from({ length: activity.participantCount }).map((_, i) => (
+                          <div key={i} className="w-4 h-4 rounded-full bg-gradient-to-br from-purple-400 to-indigo-400 border border-white" />
+                        ))}
+                        {Array.from({ length: activity.maxParticipants - activity.participantCount }).map((_, i) => (
+                          <div key={i} className="w-4 h-4 rounded-full bg-gray-200 border border-white" />
+                        ))}
+                      </div>
+                      <span className="text-[10px] font-bold text-[var(--spot-gray-500)]">
+                        {activity.participantCount}/{activity.maxParticipants}
+                      </span>
+                      {activity.participantCount >= activity.maxParticipants && (
+                        <span className="text-[9px] font-bold text-green-600 bg-green-100 px-1.5 py-0.5 rounded-full">FULL</span>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -354,19 +381,21 @@ export function MapSpot({ mission, onComplete }: MapSpotProps) {
                 {isSelected && !isMine && activity.id && (
                   <div className="mt-4 pt-3 border-t border-[var(--spot-gray-200)] animate-in slide-in-from-top-2 duration-200">
                     <button
-                      disabled={isRequesting}
+                      disabled={isRequesting || activity.participantCount >= activity.maxParticipants}
                       onClick={(e) => handlePoke(e, activity)}
                       className="w-full py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                     >
-                      {isRequesting ? '요청 완료됨' : (
+                      {activity.participantCount >= activity.maxParticipants ? '모집 완료 ✅' : isRequesting ? '요청 완료됨' : (
                         <>
                           <Handshake className="w-4 h-4" />
-                          이 유저에게 같이 하자고 찌르기
+                          이 유저에게 같이 하자고 찌르기 ({activity.participantCount}/{activity.maxParticipants})
                         </>
                       )}
                     </button>
                     <p className="text-[10px] text-[var(--spot-gray-500)] text-center mt-2">
-                      상대방에게 미션 함께하기 요청을 보냅니다.
+                      {activity.participantCount >= activity.maxParticipants
+                        ? '이 미션은 인원이 가득 찼습니다.'
+                        : '상대방에게 미션 함께하기 요청을 보냅니다.'}
                     </p>
                   </div>
                 )}
