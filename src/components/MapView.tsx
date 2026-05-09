@@ -91,12 +91,20 @@ export function MapSpot({ mission, onComplete }: MapSpotProps) {
 
     // Add user marker using DOM element for circle
     const dot = document.createElement('div');
-    dot.style.width = '16px';
-    dot.style.height = '16px';
+    dot.style.minWidth = '24px';
+    dot.style.height = '20px';
+    dot.style.padding = '0 6px';
     dot.style.backgroundColor = '#4285f4';
-    dot.style.borderRadius = '50%';
+    dot.style.borderRadius = '12px';
     dot.style.border = '2px solid white';
     dot.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+    dot.style.display = 'flex';
+    dot.style.alignItems = 'center';
+    dot.style.justifyContent = 'center';
+    dot.style.color = 'white';
+    dot.style.fontSize = '10px';
+    dot.style.fontWeight = 'bold';
+    dot.innerText = '1/5';
 
     userMarkerRef.current = new window.google.maps.marker.AdvancedMarkerElement({
         position: userLocation,
@@ -147,13 +155,21 @@ export function MapSpot({ mission, onComplete }: MapSpotProps) {
       const scale = isSelected ? 12 : 8;
 
       const dot = document.createElement('div');
-      dot.style.width = `${scale * 2}px`;
+      dot.style.minWidth = `${scale * 2.5}px`;
       dot.style.height = `${scale * 2}px`;
+      dot.style.padding = '0 6px';
       dot.style.backgroundColor = color;
-      dot.style.borderRadius = '50%';
+      dot.style.borderRadius = '12px';
       dot.style.border = '2px solid white';
       dot.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
       dot.style.opacity = '0.9';
+      dot.style.display = 'flex';
+      dot.style.alignItems = 'center';
+      dot.style.justifyContent = 'center';
+      dot.style.color = 'white';
+      dot.style.fontSize = isSelected ? '12px' : '10px';
+      dot.style.fontWeight = 'bold';
+      dot.innerText = '1/5';
 
       const marker = new window.google.maps.marker.AdvancedMarkerElement({
         position: { lat: activity.lat, lng: activity.lng },
