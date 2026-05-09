@@ -141,19 +141,12 @@ export default function App() {
           )}
 
           {screen === 'missions' && (
-            missionResult ? (
-              <MissionCards 
-                result={missionResult} 
-                onMissionSelect={handleMissionSelect}
-                userMissions={userMissions}
-                onCreateMission={handleCreateUserMission}
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full p-8 text-center space-y-4 opacity-50">
-                <Sparkles className="w-12 h-12 text-[var(--spot-gray-400)] mb-2" />
-                <p className="text-sm text-[var(--spot-gray-600)]">체크인을 먼저 해주세요!</p>
-              </div>
-            )
+            <MissionCards
+              result={missionResult}
+              onMissionSelect={handleMissionSelect}
+              userMissions={userMissions}
+              onCreateMission={handleCreateUserMission}
+            />
           )}
           
           {screen === 'map' && (

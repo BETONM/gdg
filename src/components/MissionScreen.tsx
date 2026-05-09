@@ -6,7 +6,7 @@ import { MissionResult, Mission } from '@/types/mission';
 import { cn } from '@/components/ui/utils';
 
 interface MissionCardsProps {
-  result: MissionResult;
+  result?: MissionResult | null;
   onMissionSelect: (mission: Mission) => void;
   userMissions?: Mission[];
   onCreateMission?: (mission: Mission) => void;
@@ -46,7 +46,9 @@ export function MissionCards({ result, onMissionSelect, userMissions, onCreateMi
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [newMission, setNewMission] = useState<Mission>(DEFAULT_NEW_MISSION);
-  const { stateSummary, missions, safetyNote } = result;
+  const stateSummary = result?.stateSummary;
+  const missions = result?.missions ?? [];
+  const safetyNote = result?.safetyNote ?? '';
 
   const analysisSteps = [
     { step: 1, label: '상태 분석', status: 'completed' },
@@ -182,56 +184,66 @@ export function MissionCards({ result, onMissionSelect, userMissions, onCreateMi
 
       <div className="px-4 py-5 space-y-4 pb-24">
         {/* State Summary */}
-        <div className="bg-white rounded-lg border-l-4 border-[var(--spot-blue)] shadow-md p-4">
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--spot-blue)] to-[var(--spot-green)] flex items-center justify-center flex-shrink-0 shadow-sm">
-              <Sparkles className="w-4 h-4 text-white" />
+        {stateSummary ? (
+          <div className="bg-white rounded-lg border-l-4 border-[var(--spot-blue)] shadow-md p-4">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--spot-blue)] to-[var(--spot-green)] flex items-center justify-center flex-shrink-0 shadow-sm">
+                <Sparkles className="w-4 h-4 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-xs font-medium text-[var(--spot-gray-900)] mb-1.5">Gemini 분석 결과</h3>
+                <p className="text-xs text-[var(--spot-gray-700)] break-words leading-relaxed">
+                  {stateSummary.summary}
+                </p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-xs font-medium text-[var(--spot-gray-900)] mb-1.5">Gemini 분석 결과</h3>
-              <p className="text-xs text-[var(--spot-gray-700)] break-words leading-relaxed">
-                {stateSummary.summary}
-              </p>
-            </div>
-          </div>
 
-          {/* Badges */}
-          <div className="flex flex-wrap gap-1.5 mt-3">
-            <span className="inline-flex items-center px-2 py-1 bg-[var(--spot-green-light)] text-[var(--spot-green-dark)] rounded text-[10px] font-medium uppercase">
-              {stateSummary.primaryNeed} 우선
-            </span>
-            <span className="inline-flex items-center px-2 py-1 bg-[var(--spot-gray-200)] text-[var(--spot-gray-700)] rounded text-[10px] font-medium uppercase">
-              에너지 {stateSummary.energyLevel}
-            </span>
-            <span className="inline-flex items-center px-2 py-1 bg-[var(--spot-gray-200)] text-[var(--spot-gray-700)] rounded text-[10px] font-medium uppercase">
-              긴급도 {stateSummary.urgency}
-            </span>
+            {/* Badges */}
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              <span className="inline-flex items-center px-2 py-1 bg-[var(--spot-green-light)] text-[var(--spot-green-dark)] rounded text-[10px] font-medium uppercase">
+                {stateSummary.primaryNeed} 우선
+              </span>
+              <span className="inline-flex items-center px-2 py-1 bg-[var(--spot-gray-200)] text-[var(--spot-gray-700)] rounded text-[10px] font-medium uppercase">
+                에너지 {stateSummary.energyLevel}
+              </span>
+              <span className="inline-flex items-center px-2 py-1 bg-[var(--spot-gray-200)] text-[var(--spot-gray-700)] rounded text-[10px] font-medium uppercase">
+                긴급도 {stateSummary.urgency}
+              </span>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="bg-white rounded-lg border-l-4 border-[var(--spot-gray-300)] shadow-sm p-4">
+            <p className="text-xs text-[var(--spot-gray-700)] leading-relaxed">
+              체크인을 하면 Gemini 추천 미션이 나타나요. 또는 아래에서 내 미션을 직접 추가할 수 있어요.
+            </p>
+          </div>
+        )}
 
         {/* Agent Process */}
-        <div className="bg-white rounded-lg border-l-4 border-[var(--spot-yellow)] shadow-sm p-4">
-          <h3 className="text-xs font-medium text-[var(--spot-gray-700)] mb-3 uppercase tracking-wider">AI 분석 과정</h3>
-          <div className="flex items-center gap-2">
-            {analysisSteps.map((item, index) => (
-              <div key={item.step} className="flex items-center gap-2 flex-1">
-                <div className="flex items-center gap-1.5 flex-1">
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm ${
-                    item.status === 'completed'
-                      ? 'bg-gradient-to-br from-[var(--spot-green)] to-[var(--spot-blue)]'
-                      : 'bg-[var(--spot-gray-300)]'
-                  }`}>
-                    <CheckCircle2 className="w-3 h-3 text-white" />
+        {stateSummary && (
+          <div className="bg-white rounded-lg border-l-4 border-[var(--spot-yellow)] shadow-sm p-4">
+            <h3 className="text-xs font-medium text-[var(--spot-gray-700)] mb-3 uppercase tracking-wider">AI 분석 과정</h3>
+            <div className="flex items-center gap-2">
+              {analysisSteps.map((item, index) => (
+                <div key={item.step} className="flex items-center gap-2 flex-1">
+                  <div className="flex items-center gap-1.5 flex-1">
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm ${
+                      item.status === 'completed'
+                        ? 'bg-gradient-to-br from-[var(--spot-green)] to-[var(--spot-blue)]'
+                        : 'bg-[var(--spot-gray-300)]'
+                    }`}>
+                      <CheckCircle2 className="w-3 h-3 text-white" />
+                    </div>
+                    <span className="text-[10px] text-[var(--spot-gray-700)] truncate">{item.label}</span>
                   </div>
-                  <span className="text-[10px] text-[var(--spot-gray-700)] truncate">{item.label}</span>
+                  {index < analysisSteps.length - 1 && (
+                    <ChevronRight className="w-3 h-3 text-[var(--spot-gray-400)] flex-shrink-0" />
+                  )}
                 </div>
-                {index < analysisSteps.length - 1 && (
-                  <ChevronRight className="w-3 h-3 text-[var(--spot-gray-400)] flex-shrink-0" />
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Mission Cards */}
         <div className="space-y-4">
