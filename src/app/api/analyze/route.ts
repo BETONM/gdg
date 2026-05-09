@@ -3,7 +3,7 @@ import sampleResult from '@/lib/sampleMissionResult.json';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 const SYSTEM_PROMPT = `You are a Daily Mission Designer for young adults living alone for the first time.
 Your job is to convert the user's current state into 3 small, realistic missions they can complete today.
@@ -75,6 +75,11 @@ export async function POST(request: NextRequest) {
     return Response.json(sampleResult);
   }
 
+  const userText =
+    body.mode === 'voice'
+      ? `The user described their current state in Korean via voice:\n"${body.transcript}"\n\nInfer their state from this description and generate 3 missions.`
+      : `User state:\n${JSON.stringify(body, null, 2)}\n\nGenerate 3 missions based on this state.`;
+
   try {
     const res = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, {
       method: 'POST',
@@ -84,11 +89,7 @@ export async function POST(request: NextRequest) {
         contents: [
           {
             role: 'user',
-            parts: [
-              {
-                text: `User state:\n${JSON.stringify(body, null, 2)}\n\nGenerate 3 missions based on this state.`,
-              },
-            ],
+            parts: [{ text: userText }],
           },
         ],
         generationConfig: {

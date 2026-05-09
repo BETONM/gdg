@@ -3,7 +3,7 @@ import sampleReview from '@/lib/sampleTipReview.json';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 const SYSTEM_PROMPT = `You are a Life Tip Curator for young adults living alone for the first time.
 Your job is to review, improve, and score user-submitted life tips.

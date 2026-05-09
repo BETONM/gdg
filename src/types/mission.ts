@@ -1,3 +1,9 @@
+export type InputMode = 'keyboard' | 'voice';
+
+export type CheckinPayload =
+  | ({ mode: 'keyboard' } & CheckinInput)
+  | { mode: 'voice'; transcript: string };
+
 export type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night';
 export type EnergyLevel = 'low' | 'medium' | 'high';
 export type PrimaryNeed = 'meal' | 'rest' | 'outdoor' | 'homecare' | 'social' | 'safety';
@@ -81,4 +87,15 @@ export interface TipReview {
   whyUseful: string;
   tags: string[];
   safetyOrHealthNote: string;
+}
+
+export interface Activity {
+  id?: string;
+  userId: string;
+  missionTitle: string;
+  lifeArea: LifeArea;
+  // 500m 격자 단위로 스냅된 좌표 (개인정보 보호)
+  lat: number;
+  lng: number;
+  createdAt: Date;
 }
